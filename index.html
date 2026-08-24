@@ -76,7 +76,8 @@ h4{font-weight:700;letter-spacing:-.01em}
 .accent-i{font-family:var(--serif);font-weight:400;font-style:italic;letter-spacing:0;color:var(--gold)}
 
 /* ---- reveal system (transform-safe: offsets live on wrappers, never on .rv) ---- */
-.rv{opacity:0;transform:translateY(20px);transition:opacity .65s var(--ease),transform .65s var(--ease)}
+/* standardized site-wide reveal: opacity + 16px rise, 900ms, fires once */
+.rv{opacity:0;transform:translateY(16px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
 .rv.in{opacity:1;transform:none}
 .rl{transform-origin:left center;transform:scaleX(0);transition:transform .9s var(--ease)}
 .rl.in{transform:scaleX(1)}
@@ -1093,7 +1094,7 @@ html.sc-vid .sc-vidtrack{height:10vh}
       <h2 class="vh" data-en="When you are away" data-es="Cuando no estás">When you are away</h2>
       <span class="eyebrow rv" data-en="01 / When you are away" data-es="01 / Cuando no estás" aria-hidden="true">01 / When you are away</span>
       <div class="rule rl" aria-hidden="true"></div>
-      <p class="txt" id="stmt"></p>
+      <p class="txt rv" id="stmt"></p>
     </div>
   </div>
 </section>
@@ -1612,9 +1613,8 @@ function buildMq(){
 var stmt = document.getElementById("stmt");
 var stmtEls = null, stmtLastProg = -1;
 function buildStmt(){
-  stmt.innerHTML = STMT[lang].split(/\s+/).map(function(w){ return '<span class="w">'+w+'</span>'; }).join("");
-  stmtEls = null; stmtLastProg = -1;
-  stmtScroll();
+  /* calm single-block reveal (was word-by-word, which read as a component demo) */
+  stmt.textContent = STMT[lang];
 }
 function stmtScroll(){
   if(!stmtEls){ stmtEls = stmt.querySelectorAll(".w"); }
