@@ -293,7 +293,7 @@ html.sc-vid .hero h1 .accent-i{color:#D8B66D;text-shadow:0 1px 2px rgba(6,16,24,
 .sc-peak > .mock-wrap{margin-bottom:0;margin-top:0}
 
 @media(min-width:851px){
-  .sc-peak{height:150vh}
+  .sc-peak{height:130vh}
   .sc-peak > .mock-wrap{position:sticky;top:clamp(104px,calc(50vh - 250px),176px)}
 }
 
@@ -378,7 +378,7 @@ html.sc-vid .sc-vidtrack{height:10vh}
       linear-gradient(to bottom,rgba(4,10,16,0) 50%,rgba(4,10,16,.40) 80%,rgba(4,10,16,.60) 100%),
       radial-gradient(132% 118% at 50% 44%,rgba(4,10,16,0) 56%,rgba(4,10,16,.52) 100%);
   }
-  html.sc-vid .sc-vidtrack{height:18vh}
+  html.sc-vid .sc-vidtrack{height:130vh}
 }
 
 /* mobile: headline left-anchored high, so the top-left carries more darkening */
@@ -1814,8 +1814,8 @@ if(peak && mock && img){
   var tickEls = Array.prototype.slice.call(ticks.querySelectorAll("i"));
 
   var HIDE_MAX = 62;      /* the report head is always readable, the body writes in */
-  var W0 = 0.18, W1 = 0.90;   /* write across almost the whole track: no dead tail */
-  var TICK_AT = [0.42, 0.66, 0.90];
+  var W0 = 0.06, W1 = 0.90;   /* write across the pinned phase: no dead tail */
+  var TICK_AT = [0.34, 0.62, 0.90];
   var raf = null;
 
   function settle(){
@@ -1831,11 +1831,19 @@ if(peak && mock && img){
     var vh = window.innerHeight;
     var p;
     if(window.matchMedia("(min-width:851px)").matches){
-      /* desktop: the card is pinned; progress is travel through the tall track */
+      /* desktop: write only while the card is actually pinned, so it can never
+         cover the footage during the journey. Progress = 0 when it pins, 1 when
+         it is about to release. */
+      var y = window.pageYOffset;
       var r = peak.getBoundingClientRect();
-      var trav = peak.offsetHeight;
-      if(trav <= 0){ settle(); return; }
-      p = clamp((vh - r.top)/trav);
+      var peakTopAbs = r.top + y;
+      var wrapEl = mock.parentNode;
+      var stickyTop = parseFloat(getComputedStyle(wrapEl).top) || 150;
+      var mH = wrapEl.offsetHeight;
+      var pinStart = peakTopAbs - stickyTop;
+      var pinEnd = peakTopAbs + peak.offsetHeight - stickyTop - mH;
+      if(pinEnd <= pinStart){ settle(); return; }
+      p = clamp((y - pinStart)/(pinEnd - pinStart));
     } else {
       /* mobile: no pin; the report writes as the card rises through the viewport */
       var mr = mock.getBoundingClientRect();
@@ -1909,9 +1917,14 @@ if(srows.length){
 
   function measure(){
     var vh = window.innerHeight;
-    /* the clip finishes on the interior frame a little way into the peak, so the
-       report then writes over the arrived-inside shot */
-    endY = peakEl.getBoundingClientRect().top + window.pageYOffset + vh*0.30;
+    var peakTopAbs = peakEl.getBoundingClientRect().top + window.pageYOffset;
+    if(window.matchMedia("(min-width:851px)").matches){
+      /* desktop: the whole clip plays over its own scroll, uncovered, and lands
+         on the interior right as the report rises into view */
+      endY = peakTopAbs - vh;
+    } else {
+      endY = peakTopAbs + vh*0.30;
+    }
     if(endY < vh*0.6) endY = vh*0.6;
   }
 
@@ -1928,9 +1941,16 @@ if(srows.length){
     var y = window.pageYOffset, vh = window.innerHeight;
     var p = clamp(y/endY);
     target = p*(dur - 0.06);
-    /* once the report has settled, the interior dissolves into the warm page */
+    /* the interior stays behind the report through the write, then dissolves
+       into the warm page as the report scrolls away */
     if(wrap){
-      var op = 1 - clamp((y - (endY + vh*0.15))/(vh*0.35));
+      var op;
+      if(window.matchMedia("(min-width:851px)").matches){
+        var ptop = peakEl.getBoundingClientRect().top + y;
+        op = 1 - clamp((y - (ptop + peakEl.offsetHeight*0.55))/(vh*0.45));
+      } else {
+        op = 1 - clamp((y - (endY + vh*0.15))/(vh*0.35));
+      }
       wrap.style.opacity = op.toFixed(3);
       wrap.style.visibility = op <= 0 ? "hidden" : "";
     }
