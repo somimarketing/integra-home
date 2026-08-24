@@ -538,7 +538,20 @@ html.sc-vid .sc-vidtrack{height:10vh}
 
 /* ============================ PILLARS (features-13 principle) ============================ */
 .pillars{position:relative;background:#FFFFFF;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:96px 24px 92px}
-.pill-in{max-width:1024px;margin:0 auto}
+.pill-in{position:relative;z-index:1;max-width:1024px;margin:0 auto}
+/* quiet concentric "watch" rings: a restrained, static take on the ripple idea.
+   Pure CSS, no shader, no animation, near-zero cost, respects the stillness. */
+.ripple-field{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.ripple-field::before{
+  content:"";position:absolute;top:var(--ry,50%);left:var(--rx,14%);
+  width:150vmax;height:150vmax;transform:translate(-50%,-50%);
+  background:repeating-radial-gradient(circle at center,
+    transparent 0 43px, var(--rc,rgba(6,43,73,.05)) 43px 44px, transparent 44px);
+  -webkit-mask-image:radial-gradient(circle at center,#000 0%,transparent 46%);
+          mask-image:radial-gradient(circle at center,#000 0%,transparent 46%);
+}
+.ripple-field.on-dark::before{--rc:rgba(244,241,232,.06)}
+@media(max-width:850px){.ripple-field::before{--rx:26%;--ry:20%}}
 .pill-top{display:flex;justify-content:space-between;align-items:baseline;gap:24px;margin-bottom:16px}
 .pillars h2{font-size:clamp(32px,4.4vw,54px);margin-bottom:56px}
 .pill-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:72px;align-items:start}
@@ -1109,6 +1122,7 @@ html.sc-vid .sc-vidtrack{height:10vh}
 
 <!-- ================= PILLARS ================= -->
 <section class="pillars">
+  <div class="ripple-field" aria-hidden="true"></div>
   <div class="pill-in">
     <div class="pill-top">
       <span class="eyebrow rv" data-en="03 / Every visit" data-es="03 / Cada visita">03 / Every visit</span>
@@ -1282,6 +1296,7 @@ html.sc-vid .sc-vidtrack{height:10vh}
 
 <!-- ================= FINAL CTA + FOOTER ================= -->
 <footer class="closing">
+  <div class="ripple-field on-dark" style="--rx:20%;--ry:38%" aria-hidden="true"></div>
   <div class="closing-in">
     <div class="close-cta">
       <div class="close-left">
