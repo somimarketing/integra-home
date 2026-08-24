@@ -292,6 +292,16 @@ html.sc-vid .hero h1{color:#F4F1E8;text-shadow:0 1px 2px rgba(6,16,24,.35),0 12p
 html.sc-vid .hero h1 .accent-i{color:#D8B66D;text-shadow:0 1px 2px rgba(6,16,24,.32)}
 .hero-cta{margin-top:40px}
 .hero-cta-m,.hero-scroll{display:none}
+/* "How it works" title card that fades in over the video mid-journey */
+.hero-title{display:none}
+html.sc-vid .hero-title{
+  display:flex;position:sticky;top:0;height:100vh;height:100svh;align-items:center;justify-content:center;
+  text-align:center;padding:0 24px;opacity:0;z-index:2;pointer-events:none;
+}
+html.sc-vid .hero-title span{
+  font-weight:900;letter-spacing:-.04em;line-height:1;color:#F4F1E8;
+  font-size:clamp(44px,8vw,104px);text-shadow:0 1px 3px rgba(6,16,24,.4),0 14px 40px rgba(6,16,24,.35);
+}
 .hero-cta .lbl{padding:15px 28px;font-size:15px}
 .hero-cta .arr{width:48px}
 /* hero CTA: warm white block, near-black text, gold arrow kept. No glow. */
@@ -524,15 +534,8 @@ html.sc-vid .sc-vidtrack{height:140vh}
 .stmt-left .eyebrow{margin-bottom:26px}
 .stmt-left .rule{width:52px;height:2px;background:var(--gold);margin-bottom:26px}
 .statement p.txt{font-size:clamp(26px,3.3vw,42px);font-weight:700;letter-spacing:-.03em;line-height:1.32;color:var(--navy)}
-.statement .rw{transition:opacity .5s var(--ease)}
-/* over the hero video: transparent, centred in a tall zone, light words that
-   read in as you scroll, then the video dissolves to white for section 02 */
-html.sc-vid #stmt-sec{background:transparent;z-index:2;min-height:118vh;display:flex;align-items:center;padding:0 24px}
-html.sc-vid #stmt-sec .stmt-grid{width:100%}
-html.sc-vid #stmt-sec .txt{color:#F4F1E8;text-shadow:0 1px 18px rgba(6,16,24,.45)}
-html.sc-vid #stmt-sec .rw{opacity:.24}
-html.sc-vid #stmt-sec .eyebrow{color:var(--gold)}
-@media(max-width:850px){html.sc-vid #stmt-sec{min-height:104vh;padding:0 22px}}
+/* Section 01 on the white page: words read in from dim to full (dark on ivory) */
+.statement .rw{color:var(--navy);opacity:.2;transition:opacity .5s var(--ease)}
 .stmt-notes{display:flex;flex-direction:column;gap:22px;padding-top:86px}
 .note{border-left:1px solid var(--line-strong);padding-left:14px}
 .note b{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--navy)}
@@ -1121,18 +1124,13 @@ html.sc-vid #stmt-sec .eyebrow{color:var(--gold)}
     <span class="badge hin"><span class="sp"></span><span data-en="San Carlos, Sonora" data-es="San Carlos, Sonora">San Carlos, Sonora</span></span>
     <h1 class="hin" style="transition-delay:.08s"><span class="l1" data-en="You&rsquo;re far." data-es="Tú estás lejos.">You&rsquo;re far.</span>
         <span class="l2"><span data-en="We&rsquo;re" data-es="Nosotros">We&rsquo;re</span><span class="accent-i" data-en="not." data-es="no.">not.</span></span></h1>
-    <div class="hero-cta hin" style="transition-delay:.18s">
-      <a class="btn-notch wa" data-wamsg="main" href="#" target="_blank" rel="noopener">
-        <span class="bg"></span><span class="lbl" data-en="Request a quote" data-es="Cotizar mi casa">Request a quote</span>
-        <span class="arr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 8v9H8"/></svg></span>
-      </a>
-      <a class="hero-cta-m" href="#how"><span data-en="See how it works" data-es="Cómo funciona">See how it works</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
-    <div class="hero-scroll hin" style="transition-delay:.28s" aria-hidden="true"><span data-en="SCROLL" data-es="DESLIZA">SCROLL</span><i></i><b></b></div>
+<div class="hero-scroll hin" style="transition-delay:.28s" aria-hidden="true"><span data-en="SCROLL" data-es="DESLIZA">SCROLL</span><i></i><b></b></div>
   </div>
-  <div class="sc-vidtrack" aria-hidden="true"></div>
+  <div class="sc-vidtrack" aria-hidden="true"><div class="hero-title" id="heroTitle"><span data-en="How it works" data-es="Cómo funciona">How it works</span></div></div>
 
-<div class="statement" id="stmt-sec">
+</section>
+
+<section class="statement" id="stmt-sec">
   <div class="stmt-grid">
     <div class="stmt-left">
       <h2 class="vh" data-en="When you are away" data-es="Cuando no estás">When you are away</h2>
@@ -1141,7 +1139,6 @@ html.sc-vid #stmt-sec .eyebrow{color:var(--gold)}
       <p class="txt rv" id="stmt"></p>
     </div>
   </div>
-</div>
 </section>
 
 
@@ -1669,22 +1666,19 @@ function buildStmt(){
   stmt.innerHTML = STMT[lang].split(/\s+/).map(function(w){ return '<span class="rw">'+w+'</span> '; }).join("");
   stmtWords = stmt.querySelectorAll(".rw");
   stmtLastN = -1;
+  if(reduce){ for(var i=0;i<stmtWords.length;i++) stmtWords[i].style.opacity="1"; return; }
   stmtScroll();
 }
 function stmtScroll(){
   if(reduce || !stmtWords || !stmtWords.length || !stmtSec) return;
   var r = stmtSec.getBoundingClientRect(), vh = window.innerHeight, sh = stmtSec.offsetHeight;
-  /* reading reveal: 0 as the section enters, 1 once it has risen through */
-  var prog = (vh*0.68 - r.top) / (vh*0.68 + sh*0.5);
+  /* reading reveal on the white page: words brighten as the section rises */
+  var prog = (vh*0.72 - r.top) / (vh*0.42 + sh*0.5);
   prog = Math.max(0, Math.min(1, prog));
   var n = Math.round(prog * stmtWords.length);
-  if(n !== stmtLastN){
-    stmtLastN = n;
-    for(var i=0;i<stmtWords.length;i++){ stmtWords[i].style.opacity = i < n ? "1" : "0.24"; }
-  }
-  /* fade the whole block out as it leaves so the light words never sit on white */
-  var out = Math.max(0, Math.min(1, (-r.top - sh*0.5)/(vh*0.45)));
-  stmtSec.style.opacity = (1 - out).toFixed(3);
+  if(n === stmtLastN) return;
+  stmtLastN = n;
+  for(var i=0;i<stmtWords.length;i++){ stmtWords[i].style.opacity = i < n ? "1" : "0.2"; }
 }
 window.addEventListener("scroll", stmtScroll, {passive:true});
 
@@ -2101,11 +2095,8 @@ if(srows.length){
     var vh = window.innerHeight;
     var r = hero.getBoundingClientRect();
     heroBottomAbs = r.top + window.pageYOffset + hero.offsetHeight;
-    /* the clip lands on the interior right as Section 01 enters; the interior
-       then holds behind the reading reveal and dissolves to white before 02 */
-    var ss = document.getElementById("stmt-sec");
-    var stmtTop = ss ? (ss.getBoundingClientRect().top + window.pageYOffset) : (heroBottomAbs - vh*1.1);
-    endY = stmtTop - vh*0.55;
+    /* the clip plays over the hero and lands on the interior just before 01 */
+    endY = heroBottomAbs - vh*1.05;
     if(endY < vh*0.6) endY = vh*0.6;
   }
 
@@ -2117,6 +2108,7 @@ if(srows.length){
   }
 
   var wrap = document.querySelector(".hero-vidwrap");
+  var heroTitle = document.getElementById("heroTitle");
   function onVScroll(){
     if(!dur) return;
     var y = window.pageYOffset, vh = window.innerHeight;
@@ -2127,6 +2119,13 @@ if(srows.length){
       var op = 1 - clamp((y - (heroBottomAbs - vh*0.85))/(vh*0.6));
       wrap.style.opacity = op.toFixed(3);
       wrap.style.visibility = op <= 0 ? "hidden" : "";
+    }
+    /* the "How it works" title fades in once the headline has left, holds over
+       the journey, then fades as the video dissolves toward Section 01 */
+    if(heroTitle){
+      var tin = clamp((p - 0.22)/0.2);
+      var tout = 1 - clamp((p - 0.72)/0.2);
+      heroTitle.style.opacity = Math.min(tin, tout).toFixed(3);
     }
     if(!vRaf) vRaf = requestAnimationFrame(vLoop);
   }
