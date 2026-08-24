@@ -356,7 +356,10 @@ html.sc-vid .hero-vidwrap{
   height:100vh;height:100svh;
   margin-bottom:-100vh;margin-bottom:-100svh;
   border-radius:0 0 28px 28px;
+  background:#0A1520;
 }
+/* while the video layer is chosen, keep the still hidden from the first paint */
+html.sc-vid .hero-bg{display:none}
 html.sc-vid .hero-vidwrap video{
   position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
   /* restrained grade: deeper blacks and warm highlights, no gray wash */
@@ -983,6 +986,23 @@ html.sc-vid .sc-vidtrack{height:10vh}
            data-src-mobile="assets-video/hero-m.mp4" data-poster-mobile="assets-video/hero-m-poster.jpg"></video>
     <span class="vh-haze" id="vhHaze"></span>
   </div>
+  <script>
+  /* Choose the hero footage synchronously, before the still paints, so the
+     landscape never flashes on load. Poster shows immediately; the scrub
+     script below loads metadata and wires the scroll. Falls back to the still
+     on reduced motion or if the clip errors. */
+  (function(){
+    try{
+      if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      var v = document.getElementById("heroVid");
+      if(!v) return;
+      var m = matchMedia("(max-width:850px)").matches;
+      v.poster = v.getAttribute(m ? "data-poster-mobile" : "data-poster-desktop");
+      v.setAttribute("src", v.getAttribute(m ? "data-src-mobile" : "data-src-desktop"));
+      document.documentElement.classList.add("sc-vid");
+    }catch(e){}
+  })();
+  </script>
   <div class="hero-bg"><div class="img" id="heroImg"></div>
     <div class="gblur" style="bottom:0;height:26%" aria-hidden="true"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div>
   </div>
@@ -1916,10 +1936,13 @@ if(srows.length){
   if(!vid || !hero || !peakEl) return;
   if(reduce) return;
 
-  /* pick the encode that matches the viewport's aspect */
+  /* the early inline script already chose src/poster + added sc-vid to prevent
+     a flash of the still; only set them here if that script did not run */
   var mobile = window.matchMedia("(max-width:850px)").matches;
-  vid.src = vid.getAttribute(mobile ? "data-src-mobile" : "data-src-desktop");
-  vid.poster = vid.getAttribute(mobile ? "data-poster-mobile" : "data-poster-desktop");
+  if(!vid.getAttribute("src")){
+    vid.src = vid.getAttribute(mobile ? "data-src-mobile" : "data-src-desktop");
+    vid.poster = vid.getAttribute(mobile ? "data-poster-mobile" : "data-poster-desktop");
+  }
 
   var dur = 0, target = 0, current = 0, vRaf = null, endY = 0;
 
@@ -1965,7 +1988,7 @@ if(srows.length){
     if(!vRaf) vRaf = requestAnimationFrame(vLoop);
   }
 
-  vid.addEventListener("loadedmetadata", function(){
+  function onMeta(){
     dur = vid.duration || 0;
     if(!dur) return;
     document.documentElement.classList.add("sc-vid");
@@ -1974,7 +1997,10 @@ if(srows.length){
     var warm = vid.play();
     if(warm && warm.then) warm.then(function(){ vid.pause(); vid.currentTime = 0; }).catch(function(){});
     onVScroll();
-  });
+  }
+  /* metadata may already be loading from the early script; handle both cases */
+  if(vid.readyState >= 1) onMeta();
+  else vid.addEventListener("loadedmetadata", onMeta);
   vid.addEventListener("error", function(){
     document.documentElement.classList.remove("sc-vid");
   });
