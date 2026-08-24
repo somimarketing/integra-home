@@ -157,12 +157,32 @@ nav.links a:hover,nav.links a.on{color:var(--navy)}
 
 @media(max-width:920px){nav.links{display:none}}
 @media(max-width:850px){
-  .nav-in{height:62px;padding:0 20px}
-  header.scrolled .nav-in{height:56px}
+  /* transparent header overlaying the hero: logo + EN/ES pill + circular menu */
+  #hdr{background:transparent;border-bottom:0;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  .nav-in{height:72px;padding:0 20px}
+  #hdr .brand b{color:#fff}
+  #hdr .brand small{color:rgba(255,255,255,.72)}
+  #hdr .brand .mk{filter:brightness(0) invert(1)}
+  .nav-cta{gap:12px}
   .nav-cta .btn-notch{display:none}
-  .nav-cta .lang{display:none}
-  .burger{display:grid;place-items:center;width:44px;height:44px}
-  .burger svg{width:22px;height:22px}
+  .nav-cta .lang{display:inline-flex;background:rgba(6,16,24,.30);border:1px solid rgba(216,182,109,.55);border-radius:999px;padding:3px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:none}
+  .nav-cta .lang button{color:rgba(216,182,109,.9);padding:6px 12px;min-height:34px;position:relative}
+  .nav-cta .lang button:first-child::before{content:"";position:absolute;right:0;top:22%;bottom:22%;width:1px;background:rgba(216,182,109,.35)}
+  .nav-cta .lang button[aria-pressed="true"]{color:#fff;background:transparent;box-shadow:none}
+  .nav-cta .lang button[aria-pressed="true"]::after{display:none}
+  .burger{display:grid;place-items:center;width:46px;height:46px;border:1px solid rgba(216,182,109,.6);border-radius:50%;color:#fff}
+  .burger svg{width:20px;height:20px}
+  /* once scrolled off the hero, restore a legible header (id specificity so it
+     wins over the #hdr hero-overlay rules above) */
+  #hdr.scrolled{background:rgba(250,249,246,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 6px 24px -20px rgba(6,16,24,.3)}
+  #hdr.scrolled .nav-in{height:60px}
+  #hdr.scrolled .brand b{color:var(--navy)}
+  #hdr.scrolled .brand small{color:var(--ink-45)}
+  #hdr.scrolled .brand .mk{filter:none}
+  #hdr.scrolled .nav-cta .lang{background:rgba(6,16,24,.04);border-color:rgba(84,66,34,.22)}
+  #hdr.scrolled .nav-cta .lang button{color:var(--gold-deep)}
+  #hdr.scrolled .nav-cta .lang button[aria-pressed="true"]{color:var(--navy)}
+  #hdr.scrolled .burger{border-color:rgba(84,66,34,.3);color:var(--navy)}
 }
 
 /* slide-in drawer (mobile) */
@@ -238,7 +258,7 @@ nav.links a:hover,nav.links a.on{color:var(--navy)}
 }
 
 .hero-in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:76svh;padding:104px 24px 0}
-@media(max-width:850px){.hero-in{min-height:72svh;padding:118px 22px 0}}
+@media(max-width:850px){.hero-in{min-height:100svh;justify-content:flex-end;align-items:flex-start;text-align:left;padding:0 26px calc(5svh + env(safe-area-inset-bottom))}}
 /* soft load entrance, staggered */
 .hin{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .hin.go{opacity:1;transform:none}
@@ -269,6 +289,7 @@ html.sc-vid .badge .sp{background:#D8B66D}
 html.sc-vid .hero h1{color:#F4F1E8;text-shadow:0 1px 2px rgba(6,16,24,.35),0 12px 30px rgba(6,16,24,.28)}
 html.sc-vid .hero h1 .accent-i{color:#D8B66D;text-shadow:0 1px 2px rgba(6,16,24,.32)}
 .hero-cta{margin-top:40px}
+.hero-cta-m,.hero-scroll{display:none}
 .hero-cta .lbl{padding:15px 28px;font-size:15px}
 .hero-cta .arr{width:48px}
 /* hero CTA: warm white block, near-black text, gold arrow kept. No glow. */
@@ -438,12 +459,25 @@ html.sc-vid .sc-vidtrack{height:10vh}
   /* art-directed mobile crop: zoom into the hillside so the architecture reads
      larger and less empty water sits below the CTA (independent of desktop) */
   html.sc-vid .hero-vidwrap video{
-    object-position:50% 30%;
-    transform:scale(1.55);
-    transform-origin:50% 40%;
+    object-position:50% 42%;
+    transform:scale(1.12);
+    transform-origin:50% 46%;
   }
-  /* nudge the headline group down for balance after the tighter crop */
-  .hero-in{justify-content:flex-start;padding-top:24svh}
+  /* clean cinematic hero: no badge, one gold pill CTA, headline low over water */
+  .hero .badge{display:none}
+  .hero-cta{margin-top:30px;width:auto;display:block}
+  .hero-cta .btn-notch{display:none}
+  .hero-cta-m{
+    display:inline-flex;align-items:center;gap:12px;background:var(--gold);color:#15110F;
+    font-size:16px;font-weight:700;letter-spacing:-.01em;padding:16px 26px;border-radius:999px;
+    box-shadow:0 12px 30px -12px rgba(216,182,109,.55);transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+  }
+  .hero-cta-m svg{stroke:#15110F}
+  .hero-cta-m:active{transform:scale(.98)}
+  .hero-scroll{display:flex;flex-direction:column;align-items:center;gap:9px;align-self:center;margin-top:6svh}
+  .hero-scroll span{font-size:10px;font-weight:700;letter-spacing:.24em;color:var(--gold)}
+  .hero-scroll i{width:1px;height:34px;background:var(--gold);opacity:.7}
+  .hero-scroll b{width:9px;height:9px;border-radius:50%;border:1px solid var(--gold)}
 }
 /* reduced-motion / no-video fallback: crop the still landscape the same way */
 @media(max-width:850px){
@@ -1090,14 +1124,16 @@ html.sc-vid .sc-vidtrack{height:10vh}
   </div>
   <div class="hero-in">
     <span class="badge hin"><span class="sp"></span><span data-en="San Carlos, Sonora" data-es="San Carlos, Sonora">San Carlos, Sonora</span></span>
-    <h1 class="hin" style="transition-delay:.08s"><span class="l1" data-en="You are far." data-es="Tú estás lejos.">You are far.</span>
-        <span class="l2"><span data-en="We are" data-es="Nosotros">We are</span><span class="accent-i" data-en="not." data-es="no.">not.</span></span></h1>
+    <h1 class="hin" style="transition-delay:.08s"><span class="l1" data-en="You&rsquo;re far." data-es="Tú estás lejos.">You&rsquo;re far.</span>
+        <span class="l2"><span data-en="We&rsquo;re" data-es="Nosotros">We&rsquo;re</span><span class="accent-i" data-en="not." data-es="no.">not.</span></span></h1>
     <div class="hero-cta hin" style="transition-delay:.18s">
       <a class="btn-notch wa" data-wamsg="main" href="#" target="_blank" rel="noopener">
         <span class="bg"></span><span class="lbl" data-en="Request a quote" data-es="Cotizar mi casa">Request a quote</span>
         <span class="arr"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7l10 10M17 8v9H8"/></svg></span>
       </a>
+      <a class="hero-cta-m" href="#how"><span data-en="See how it works" data-es="Cómo funciona">See how it works</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
+    <div class="hero-scroll hin" style="transition-delay:.28s" aria-hidden="true"><span data-en="SCROLL" data-es="DESLIZA">SCROLL</span><i></i><b></b></div>
   </div>
   <div class="sc-vidtrack" aria-hidden="true"></div>
 
