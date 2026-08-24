@@ -293,7 +293,7 @@ html.sc-vid .hero h1 .accent-i{color:#D8B66D;text-shadow:0 1px 2px rgba(6,16,24,
 .sc-peak > .mock-wrap{margin-bottom:0;margin-top:0}
 
 @media(min-width:851px){
-  .sc-peak{height:220vh}
+  .sc-peak{height:150vh}
   .sc-peak > .mock-wrap{position:sticky;top:clamp(104px,calc(50vh - 250px),176px)}
 }
 
@@ -1814,8 +1814,8 @@ if(peak && mock && img){
   var tickEls = Array.prototype.slice.call(ticks.querySelectorAll("i"));
 
   var HIDE_MAX = 62;      /* the report head is always readable, the body writes in */
-  var W0 = 0.34, W1 = 0.80;
-  var TICK_AT = [0.30, 0.55, 0.80];
+  var W0 = 0.18, W1 = 0.90;   /* write across almost the whole track: no dead tail */
+  var TICK_AT = [0.42, 0.66, 0.90];
   var raf = null;
 
   function settle(){
@@ -1854,7 +1854,7 @@ if(peak && mock && img){
     tickEls.forEach(function(t,i){ t.classList.toggle("on", wp >= TICK_AT[i]); });
 
     /* the pause after the report is written, then the card settles and holds */
-    mock.style.transform = "scale(" + (0.992 + 0.008*ease(clamp((p - W1)/0.14))).toFixed(4) + ")";
+    mock.style.transform = "scale(" + (0.992 + 0.008*ease(clamp((p - W1)/0.08))).toFixed(4) + ")";
   }
 
   function onScroll(){ if(!raf) raf = requestAnimationFrame(frame); }
