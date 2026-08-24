@@ -403,6 +403,14 @@ html.sc-vid .sc-vidtrack{height:10vh}
 
 /* ---- marquee ---- */
 .marquee{padding:46px 0 6px;overflow:hidden}
+/* mobile: the sticky hero video is a positioned layer, so the sections that
+   follow must paint opaquely above it or the footage bleeds through them */
+@media(max-width:850px){
+  html.sc-vid .transition,
+  html.sc-vid .marquee,
+  html.sc-vid .statement,
+  html.sc-vid .bento{position:relative;z-index:1;background:var(--bg)}
+}
 .mq-track{display:flex;width:max-content;animation:mq 70s linear infinite}
 @keyframes mq{to{transform:translateX(-50%)}}
 .mq-track span{
