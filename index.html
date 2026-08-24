@@ -258,7 +258,7 @@ nav.links a:hover,nav.links a.on{color:var(--navy)}
 }
 
 .hero-in{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:76svh;padding:104px 24px 0}
-@media(max-width:850px){.hero-in{min-height:100svh;justify-content:flex-end;align-items:flex-start;text-align:left;padding:0 26px calc(5svh + env(safe-area-inset-bottom))}}
+@media(max-width:850px){.hero-in{min-height:100svh;justify-content:flex-end;align-items:center;text-align:center;padding:0 26px calc(5svh + env(safe-area-inset-bottom))}}
 /* soft load entrance, staggered */
 .hin{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .hin.go{opacity:1;transform:none}
@@ -467,13 +467,18 @@ html.sc-vid .sc-vidtrack{height:10vh}
   .hero .badge{display:none}
   .hero-cta{margin-top:30px;width:auto;display:block}
   .hero-cta .btn-notch{display:none}
+  /* liquid-glass CTA: frosted transparent over the hero, subtle bevel */
   .hero-cta-m{
-    display:inline-flex;align-items:center;gap:12px;background:var(--gold);color:#15110F;
-    font-size:16px;font-weight:700;letter-spacing:-.01em;padding:16px 26px;border-radius:999px;
-    box-shadow:0 12px 30px -12px rgba(216,182,109,.55);transition:transform .2s var(--ease),box-shadow .2s var(--ease);
+    display:inline-flex;align-items:center;gap:12px;color:#fff;
+    font-size:16px;font-weight:600;letter-spacing:-.005em;padding:17px 30px;border-radius:999px;
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(16px) saturate(165%);-webkit-backdrop-filter:blur(16px) saturate(165%);
+    border:1px solid rgba(255,255,255,.34);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.45),inset 0 -2px 6px rgba(0,0,0,.12),0 10px 34px -12px rgba(0,0,0,.4);
+    transition:transform .2s var(--ease),background .25s var(--ease);
   }
-  .hero-cta-m svg{stroke:#15110F}
-  .hero-cta-m:active{transform:scale(.98)}
+  .hero-cta-m svg{stroke:#fff}
+  .hero-cta-m:active{transform:scale(.97);background:rgba(255,255,255,.2)}
   .hero-scroll{display:flex;flex-direction:column;align-items:center;gap:9px;align-self:center;margin-top:6svh}
   .hero-scroll span{font-size:10px;font-weight:700;letter-spacing:.24em;color:var(--gold)}
   .hero-scroll i{width:1px;height:34px;background:var(--gold);opacity:.7}
@@ -982,54 +987,14 @@ html.sc-vid .sc-vidtrack{height:10vh}
   .close-bar{margin-top:30px;flex-direction:column;align-items:flex-start;gap:6px}
 }
 
-/* ===== fixed white picture frame (desktop only) ===== */
-.site-frame{position:fixed;z-index:980;pointer-events:none;background:#fff}
-.sf-t{top:0;left:0;right:0;height:10px}
-.sf-b{bottom:0;left:0;right:0;height:10px}
-.sf-l{top:0;left:0;bottom:0;width:10px}
-.sf-r{top:0;right:0;bottom:0;width:10px}
-.site-corner{position:fixed;z-index:979;pointer-events:none;color:#fff}
-.sc-tl{top:10px;left:10px;transform:rotate(90deg)}
-.sc-tr{top:10px;right:10px;transform:rotate(180deg)}
-.sc-bl{bottom:10px;left:10px}
-.sc-br{bottom:10px;right:10px;transform:rotate(270deg)}
-@media(max-width:850px){.site-frame,.site-corner{display:none}}
+/* white picture frame removed */
 
-/* navbar docked into the top frame band: floating centred white tab */
-@media(min-width:851px){
-  header{
-    top:10px;left:50%;right:auto;transform:translateX(-50%);
-    width:min(1180px,calc(100vw - 100px));
-    background:#fff;border-bottom:0;border-radius:0 0 26px 26px;
-    box-shadow:0 10px 30px -22px rgba(6,16,24,.35);
-    backdrop-filter:none;-webkit-backdrop-filter:none;
-  }
-  header.scrolled{background:#fff;box-shadow:0 12px 34px -22px rgba(6,16,24,.42)}
-  /* inverse corner curves that blend the tab shoulders into the top bar */
-  .hdr-shoulder{position:absolute;top:0;color:#fff}
-  .hs-l{left:-49px;transform:rotate(180deg)}
-  .hs-r{right:-49px;transform:rotate(90deg)}
-}
-/* mobile: reset header to full width, no shoulders, no frame */
-@media(max-width:850px){
-  .hdr-shoulder{display:none}
-}
 </style>
 
-<div class="site-frame sf-t" aria-hidden="true"></div>
-<div class="site-frame sf-b" aria-hidden="true"></div>
-<div class="site-frame sf-l" aria-hidden="true"></div>
-<div class="site-frame sf-r" aria-hidden="true"></div>
-<svg class="site-corner sc-tl" width="50" height="50" viewBox="0 0 50 50" fill="none" aria-hidden="true"><path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/></svg>
-<svg class="site-corner sc-tr" width="50" height="50" viewBox="0 0 50 50" fill="none" aria-hidden="true"><path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/></svg>
-<svg class="site-corner sc-bl" width="50" height="50" viewBox="0 0 50 50" fill="none" aria-hidden="true"><path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/></svg>
-<svg class="site-corner sc-br" width="50" height="50" viewBox="0 0 50 50" fill="none" aria-hidden="true"><path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/></svg>
 
 <div class="grain" aria-hidden="true"></div>
 
 <header id="hdr">
-  <svg class="hdr-shoulder hs-l" width="50" height="50" viewBox="0 0 50 50" fill="none" aria-hidden="true"><path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/></svg>
-  <svg class="hdr-shoulder hs-r" width="50" height="50" viewBox="0 0 50 50" fill="none" aria-hidden="true"><path d="M5.50871e-06 0C-0.00788227 37.3001 8.99616 50.0116 50 50H5.50871e-06V0Z" fill="currentColor"/></svg>
   <div class="nav-in">
     <a class="brand" href="#top" aria-label="Integra">
       <span class="mk"></span>
