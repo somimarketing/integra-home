@@ -292,15 +292,10 @@ html.sc-vid .hero h1{color:#F4F1E8;text-shadow:0 1px 2px rgba(6,16,24,.35),0 12p
 html.sc-vid .hero h1 .accent-i{color:#D8B66D;text-shadow:0 1px 2px rgba(6,16,24,.32)}
 .hero-cta{margin-top:40px}
 .hero-cta-m,.hero-scroll{display:none}
-/* "How it works" title card that fades in over the video mid-journey */
-.hero-title{display:none}
-html.sc-vid .hero-title{
-  display:flex;position:sticky;top:0;height:100vh;height:100svh;align-items:center;justify-content:center;
-  text-align:center;padding:0 24px;opacity:0;z-index:2;pointer-events:none;
-}
-html.sc-vid .hero-title span{
-  font-weight:900;letter-spacing:-.04em;line-height:1;color:#F4F1E8;
-  font-size:clamp(44px,8vw,104px);text-shadow:0 1px 3px rgba(6,16,24,.4),0 14px 40px rgba(6,16,24,.35);
+/* seamless video -> white handoff: a warm-white gradient rises over the video */
+html.sc-vid .vid-out{
+  position:absolute;left:0;right:0;bottom:0;height:100%;pointer-events:none;opacity:0;
+  background:linear-gradient(to bottom,rgba(250,249,246,.72) 0%,var(--bg) 46%);
 }
 .hero-cta .lbl{padding:15px 28px;font-size:15px}
 .hero-cta .arr{width:48px}
@@ -1115,6 +1110,7 @@ html.sc-vid .sc-vidtrack{height:140vh}
            data-src-desktop="assets-video/hero-d.mp4" data-poster-desktop="assets-video/hero-d-poster.jpg"
            data-src-mobile="assets-video/hero-m.mp4" data-poster-mobile="assets-video/hero-m-poster.jpg"></video>
     <span class="vh-haze" id="vhHaze"></span>
+    <span class="vid-out" id="vidOut" aria-hidden="true"></span>
   </div>
   <script>
   /* Choose the hero footage synchronously, before the still paints, so the
@@ -1142,7 +1138,7 @@ html.sc-vid .sc-vidtrack{height:140vh}
         <span class="l2"><span data-en="We&rsquo;re" data-es="Nosotros">We&rsquo;re</span><span class="accent-i" data-en="not." data-es="no.">not.</span></span></h1>
 <div class="hero-scroll hin" style="transition-delay:.28s" aria-hidden="true"><span class="mouse"><span class="wheel"></span></span></div>
   </div>
-  <div class="sc-vidtrack" aria-hidden="true"><div class="hero-title" id="heroTitle"><span data-en="How it works" data-es="Cómo funciona">How it works</span></div></div>
+  <div class="sc-vidtrack" aria-hidden="true"></div>
 
 </section>
 
@@ -2124,24 +2120,19 @@ if(srows.length){
   }
 
   var wrap = document.querySelector(".hero-vidwrap");
-  var heroTitle = document.getElementById("heroTitle");
+  var vidOut = document.getElementById("vidOut");
   function onVScroll(){
     if(!dur) return;
     var y = window.pageYOffset, vh = window.innerHeight;
     var p = clamp(y/endY);
     target = p*(dur - 0.06);
-    /* the interior holds, then dissolves into the page as the hero hands off */
+    /* seamless handoff: a warm-white gradient rises over the interior across the
+       last ~1.5vh of the hero, then the wrap hides once fully white */
     if(wrap){
-      var op = 1 - clamp((y - (heroBottomAbs - vh*0.85))/(vh*0.6));
-      wrap.style.opacity = op.toFixed(3);
-      wrap.style.visibility = op <= 0 ? "hidden" : "";
-    }
-    /* the "How it works" title fades in once the headline has left, holds over
-       the journey, then fades as the video dissolves toward Section 01 */
-    if(heroTitle){
-      var tin = clamp((p - 0.22)/0.2);
-      var tout = 1 - clamp((p - 0.72)/0.2);
-      heroTitle.style.opacity = Math.min(tin, tout).toFixed(3);
+      var g = clamp((y - (heroBottomAbs - vh*1.5))/(vh*1.15));
+      var e = g*g*(3 - 2*g); /* smoothstep */
+      if(vidOut) vidOut.style.opacity = e.toFixed(3);
+      wrap.style.visibility = e >= 0.995 ? "hidden" : "";
     }
     if(!vRaf) vRaf = requestAnimationFrame(vLoop);
   }
