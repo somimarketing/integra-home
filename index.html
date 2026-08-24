@@ -257,13 +257,14 @@ html.sc-vid .badge{
 }
 html.sc-vid .badge .sp{background:#D8B66D}
 .hero h1{
-  font-size:clamp(48px,7.4vw,98px);line-height:1.02;letter-spacing:-.035em;
+  font-size:clamp(48px,7.4vw,98px);line-height:.97;letter-spacing:-.04em;
   color:var(--navy-deep);
 }
-/* editorial hierarchy: heavy sans -> calm semibold sans -> expressive serif italic */
+/* one fused composition: Inter Black, then a size step, then a serif italic that
+   locks into the sans (not a floating accent) */
 .hero h1 .l1{font-weight:900}
-.hero h1 .l2{display:block;margin-top:-.01em;font-weight:600;font-size:.9em;letter-spacing:-.03em}
-.hero h1 .accent-i{font-weight:300;font-size:.9em;color:var(--gold);margin-left:.1em;vertical-align:baseline}
+.hero h1 .l2{display:block;margin-top:-.05em;font-weight:900;font-size:.8em;letter-spacing:-.04em;white-space:nowrap}
+.hero h1 .accent-i{font-weight:300;font-size:1.06em;margin-left:.14em;letter-spacing:-.01em;color:var(--gold);vertical-align:baseline}
 /* over the cinematic video: warm white headline, muted gold accent, shadow not glow */
 html.sc-vid .hero h1{color:#F4F1E8;text-shadow:0 1px 2px rgba(6,16,24,.35),0 12px 30px rgba(6,16,24,.28)}
 html.sc-vid .hero h1 .accent-i{color:#D8B66D;text-shadow:0 1px 2px rgba(6,16,24,.32)}
@@ -438,15 +439,15 @@ html.sc-vid .sc-vidtrack{height:10vh}
      larger and less empty water sits below the CTA (independent of desktop) */
   html.sc-vid .hero-vidwrap video{
     object-position:50% 30%;
-    transform:scale(1.32);
-    transform-origin:50% 34%;
+    transform:scale(1.55);
+    transform-origin:50% 40%;
   }
-  /* nudge the headline group down a touch for balance after the tighter crop */
-  .hero-in{justify-content:flex-start;padding-top:19svh}
+  /* nudge the headline group down for balance after the tighter crop */
+  .hero-in{justify-content:flex-start;padding-top:24svh}
 }
 /* reduced-motion / no-video fallback: crop the still landscape the same way */
 @media(max-width:850px){
-  .hero-bg .img{background-position:50% 28%;background-size:132%}
+  .hero-bg .img{background-position:50% 34%;background-size:155%}
 }
 
 /* reduced motion: every scroll-driven state resolves to its finished value */
@@ -1090,7 +1091,7 @@ html.sc-vid .sc-vidtrack{height:10vh}
   <div class="hero-in">
     <span class="badge hin"><span class="sp"></span><span data-en="San Carlos, Sonora" data-es="San Carlos, Sonora">San Carlos, Sonora</span></span>
     <h1 class="hin" style="transition-delay:.08s"><span class="l1" data-en="You are far." data-es="Tú estás lejos.">You are far.</span>
-        <span class="l2"><span data-en="We are" data-es="Nosotros">We are</span> <span class="accent-i" data-en="not." data-es="no.">not.</span></span></h1>
+        <span class="l2"><span data-en="We are" data-es="Nosotros">We are</span><span class="accent-i" data-en="not." data-es="no.">not.</span></span></h1>
     <div class="hero-cta hin" style="transition-delay:.18s">
       <a class="btn-notch wa" data-wamsg="main" href="#" target="_blank" rel="noopener">
         <span class="bg"></span><span class="lbl" data-en="Request a quote" data-es="Cotizar mi casa">Request a quote</span>
